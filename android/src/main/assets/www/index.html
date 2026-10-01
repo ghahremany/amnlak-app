@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<title>امنلاک</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<div class="splash" id="splash">
+  <div class="sp-glow"></div>
+  <img class="sp-gif" id="spgif" src="img/logo.png" alt="امنلاک">
+  <div class="sp-txt" id="sptxt">
+    <b>ساختن، سنجیدن، مطمئن شدن</b>
+    <span>امنلاک</span>
+  </div>
+  <div class="sp-hint" id="sphint">برای رد کردن لمس کنید</div>
+</div>
+
+<header class="appbar">
+  <button class="iconbtn" id="menubtn" aria-label="منو">
+    <svg viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+  </button>
+  <div class="ttl" id="bartitle">امنلاک</div>
+  <button class="iconbtn themebtn" id="themebtn" aria-label="حالت شب">
+    <svg viewBox="0 0 24 24"><path d="M21 12.8A9 9 0 1111.2 3a7 7 0 009.8 9.8z"/></svg>
+  </button>
+  <button class="iconbtn" id="backbtn" aria-label="بازگشت" style="display:none">
+    <svg viewBox="0 0 24 24"><path d="M10 6l6 6-6 6"/></svg>
+  </button>
+</header>
+
+<div class="scrim" id="scrim"></div>
+
+<nav class="drawer" id="drawer">
+  <div class="dhead">
+    <img src="img/logo.png" alt="لوگو">
+    <div>
+      <b>امنلاک</b>
+      <span>محاسبات ساختمان و املاک</span>
+    </div>
+  </div>
+  <div class="dscroll" id="dscroll"></div>
+  <div class="dbottom" id="dbottom"></div>
+  <div class="dfoot">ساختمان و املاک، دقیق‌تر و ساده‌تر • نسخه ۰.۱</div>
+</nav>
+
+<main id="main"></main>
+
+<script src="calculators.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

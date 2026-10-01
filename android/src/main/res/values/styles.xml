@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="brand_red">#F3A712</color>
+    <color name="brand_blue">#075FB5</color>
+    <color name="bg">#F2F6FB</color>
+    <color name="ic_bg">#FFFFFFFF</color>
+
+    <style name="AppTheme" parent="@android:style/Theme.Material.Light.NoActionBar">
+        <item name="android:colorPrimary">@color/brand_blue</item>
+        <item name="android:colorAccent">@color/brand_red</item>
+        <item name="android:statusBarColor">@color/brand_blue</item>
+        <item name="android:navigationBarColor">#FFFFFFFF</item>
+        <item name="android:windowBackground">@color/bg</item>
+    </style>
+
+    <style name="SplashTheme" parent="@android:style/Theme.Material.Light.NoActionBar">
+        <item name="android:windowBackground">@drawable/splash</item>
+        <item name="android:statusBarColor">#090913</item>
+        <item name="android:navigationBarColor">#090913</item>
+    </style>
+</resources>

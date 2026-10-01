@@ -1,0 +1,21 @@
+# کلیدهای امضا و رمزها — هرگز منتشر نشوند
+keystore/
+keystore.properties
+*.jks
+*.keystore
+
+# خروجی‌های ساخت
+build/
+*.idsig
+*.unsigned.apk
+
+# فایل‌های موقت سیستم
+.DS_Store
+Thumbs.db
+*.log
+
+# بسته‌های خروجی محلی
+*.zip
+
+# گردش‌کار محلی (توکن OAuth فعلی مجوز workflow ندارد)
+.github/workflows/
