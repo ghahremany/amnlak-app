@@ -22,6 +22,53 @@ function toEn(s) {
 function el(id) { return document.getElementById(id); }
 function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]; }); }
 
+
+/* ---------- آیکون‌های خطی مینیمال امنلاک ---------- */
+var UI_ICONS = {
+  map:'<path d="m3 6 6-3 6 3 6-3v15l-6 3-6-3-6 3V6Z"/><path d="M9 3v15M15 6v15"/>',
+  plus:'<path d="M12 5v14M5 12h14"/>',
+  calculator:'<rect x="4" y="2.5" width="16" height="19" rx="2.5"/><path d="M8 6.5h8M8 11h.01M12 11h.01M16 11h.01M8 15h.01M12 15h.01M16 15h.01M8 19h.01M12 19h4"/>',
+  user:'<circle cx="12" cy="8" r="3.5"/><path d="M5 21v-2a7 7 0 0 1 14 0v2"/>',
+  clock:'<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',
+  structure:'<path d="M3 21h18M6 21V6l6-3v18M18 21V9l-6-2"/><path d="M9 9h.01M9 13h.01M9 17h.01M15 12h.01M15 16h.01"/>',
+  material:'<rect x="3" y="5" width="18" height="14" rx="1"/><path d="M3 10h18M3 15h18M8 5v5M16 5v5M6 10v5M14 10v5M9 15v4M17 15v4"/>',
+  finish:'<path d="m14 4 6 6M13 5l2-2 6 6-2 2M16 8 7 17"/><path d="M7 17c-2 0-4 1.5-4 4 2.5 0 4-1 4-4Z"/>',
+  measure:'<path d="m16 3 5 5L8 21H3v-5Z"/><path d="m14 7 3 3M11 10l2 2M8 13l3 3"/>',
+  cost:'<path d="M3 7h15a3 3 0 0 1 3 3v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7Z"/><path d="M3 7V5a2 2 0 0 1 2-2h12M16 13h5M16 13h.01"/>',
+  estate:'<path d="m3 11 9-8 9 8"/><path d="M5 10v11h14V10M9 21v-6h6v6"/>',
+  info:'<circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7h.01"/>',
+  phone:'<path d="M7 3H4a1 1 0 0 0-1 1c0 9.4 7.6 17 17 17a1 1 0 0 0 1-1v-3l-4-1-2 2c-4-1.6-7.4-5-9-9l2-2Z"/>',
+  code:'<path d="m8 9-3 3 3 3M16 9l3 3-3 3M14 5l-4 14"/>',
+  search:'<circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/>',
+  share:'<circle cx="18" cy="5" r="2.5"/><circle cx="6" cy="12" r="2.5"/><circle cx="18" cy="19" r="2.5"/><path d="m8.2 10.8 7.6-4.6M8.2 13.2l7.6 4.6"/>',
+  compass:'<circle cx="12" cy="12" r="9"/><path d="m15.5 8.5-2 5-5 2 2-5Z"/>',
+  message:'<path d="M21 15a4 4 0 0 1-4 4H8l-5 3 1.5-5A7 7 0 0 1 3 13V8a4 4 0 0 1 4-4h10a4 4 0 0 1 4 4Z"/><path d="M8 10h8M8 14h5"/>',
+  globe:'<circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/>',
+  send:'<path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/>',
+  location:'<circle cx="12" cy="12" r="3.5"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/>',
+  tag:'<path d="M20 13 13 20 3 10V3h7Z"/><circle cx="7.5" cy="7.5" r="1"/>',
+  sparkles:'<path d="m12 3 1.2 3.8L17 8l-3.8 1.2L12 13l-1.2-3.8L7 8l3.8-1.2ZM5 15l.8 2.2L8 18l-2.2.8L5 21l-.8-2.2L2 18l2.2-.8ZM19 14l.7 1.8 1.8.7-1.8.7L19 19l-.7-1.8-1.8-.7 1.8-.7Z"/>',
+  camera:'<path d="M4 7h3l1.5-2h7L17 7h3a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V9a2 2 0 0 1 2-2Z"/><circle cx="12" cy="13" r="4"/>',
+  logout:'<path d="M10 17l5-5-5-5M15 12H3M21 19V5a2 2 0 0 0-2-2h-5"/>',
+  trash:'<path d="M4 7h16M9 7V4h6v3M7 7l1 14h8l1-14M10 11v6M14 11v6"/>',
+  close:'<path d="m7 7 10 10M17 7 7 17"/>',
+  check:'<path d="m5 12 4 4L19 6"/>',
+  chevron:'<path d="m9 7 5 5-5 5"/>',
+  menu:'<path d="M4 7h16M4 12h16M4 17h16"/>',
+  moon:'<path d="M21 12.8A9 9 0 1 1 11.2 3 7 7 0 0 0 21 12.8Z"/>'
+};
+function uiIcon(name, extra) {
+  var body = UI_ICONS[name] || UI_ICONS.info;
+  return '<svg class="ui-icon' + (extra ? ' ' + extra : '') + '" viewBox="0 0 24 24" aria-hidden="true">' + body + '</svg>';
+}
+function groupIconName(gid) {
+  return ({structure:'structure',material:'material',finish:'finish',measure:'measure',cost:'cost',estate:'estate'})[gid] || 'calculator';
+}
+function hydrateStaticIcons() {
+  var nodes = document.querySelectorAll('[data-ui-icon]');
+  for (var i = 0; i < nodes.length; i++) nodes[i].innerHTML = uiIcon(nodes[i].getAttribute('data-ui-icon'));
+}
+
 /* ---------- وضعیت ---------- */
 var state = { view: 'home', gid: null, cid: null };
 var history_ = [];
@@ -50,13 +97,15 @@ function go(view, gid, cid) {
 /* ---------- ساخت منو ---------- */
 function buildDrawer() {
   var h = '';
-  h += '<div class="ditem" onclick="go(\'home\')"><div class="dico">🏠</div><div>صفحه اصلی</div></div>';
-  h += '<div class="ditem" onclick="go(\'history\')"><div class="dico">🕘</div><div>تاریخچه محاسبات</div><div class="cnt">' + fa(histGet().length) + '</div></div>';
+  h += '<div class="ditem" onclick="goTab(\'home\')"><div class="dico">' + uiIcon('map') + '</div><div>نقشه املاک</div></div>';
+  h += '<div class="ditem" onclick="goTab(\'register\')"><div class="dico">' + uiIcon('plus') + '</div><div>ثبت ملک من</div></div>';
+  h += '<div class="ditem" onclick="goTab(\'tools\')"><div class="dico">' + uiIcon('calculator') + '</div><div>ماشین‌حساب‌ها</div></div>';
+  h += '<div class="ditem" onclick="go(\'history\')"><div class="dico">' + uiIcon('clock') + '</div><div>تاریخچه محاسبات</div><div class="cnt">' + fa(histGet().length) + '</div></div>';
   h += '<div class="dsep"></div>';
   GROUPS.forEach(function (g, i) {
     var items = calcsOf(g.id);
-    h += '<div class="ditem" onclick="toggleSub(' + i + ',this)"><div class="dico" style="background:' + g.color + '18">' + g.em + '</div>' +
-         '<div>' + g.name + '</div><div class="chev">▼</div></div>';
+    h += '<div class="ditem" onclick="toggleSub(' + i + ',this)"><div class="dico" style="background:' + g.color + '18;color:' + g.color + '">' + uiIcon(groupIconName(g.id)) + '</div>' +
+         '<div>' + g.name + '</div><div class="chev">' + uiIcon('chevron') + '</div></div>';
     h += '<div class="dsub" id="sub' + i + '">';
     items.forEach(function (c) {
       h += '<div onclick="go(\'calc\',\'' + g.id + '\',\'' + c.id + '\')">' + c.title + '</div>';
@@ -67,9 +116,9 @@ function buildDrawer() {
   el('dscroll').innerHTML = h;
 
   var b = '';
-  b += '<div class="ditem" onclick="go(\'about\')"><div class="dico">ℹ️</div><div>درباره ما و راهنمای استفاده</div></div>';
-  b += '<div class="ditem" onclick="go(\'contact\')"><div class="dico">📞</div><div>تماس با کارشناسان</div></div>';
-  b += '<div class="ditem" onclick="go(\'dev\')"><div class="dico" style="background:#0B4EA218">👨‍💻</div><div>ارتباط با توسعه‌دهنده</div></div>';
+  b += '<div class="ditem" onclick="go(\'about\')"><div class="dico">' + uiIcon('info') + '</div><div>درباره ما و راهنمای استفاده</div></div>';
+  b += '<div class="ditem" onclick="go(\'contact\')"><div class="dico">' + uiIcon('phone') + '</div><div>تماس با کارشناسان</div></div>';
+  b += '<div class="ditem" onclick="go(\'dev\')"><div class="dico" style="background:#0B4EA218">' + uiIcon('code') + '</div><div>ارتباط با توسعه‌دهنده</div></div>';
   el('dbottom').innerHTML = b;
 }
 
@@ -88,7 +137,10 @@ function render(s, isBack) {
   var title = 'امنلاک';
   var html = '';
 
-  if (s.view === 'home') { html = viewHome(); title = 'امنلاک'; }
+  if (s.view === 'home') { html = viewHome(); title = 'نقشه املاک'; }
+  else if (s.view === 'register') { html = viewRegister(); title = 'ثبت ملک'; }
+  else if (s.view === 'tools') { html = viewTools(); title = 'محاسبات'; }
+  else if (s.view === 'account') { html = viewAccount(); title = 'حساب من'; }
   else if (s.view === 'group') { var g = findGroup(s.gid); html = viewGroup(g); title = g.name; }
   else if (s.view === 'calc') { var c = findCalc(s.cid); html = viewCalc(c); title = c.title; }
   else if (s.view === 'about') { html = viewAbout(); title = 'درباره ما'; }
@@ -97,27 +149,31 @@ function render(s, isBack) {
   else if (s.view === 'history') { html = viewHistory(); title = 'تاریخچه محاسبات'; }
 
   el('bartitle').textContent = title;
-  el('backbtn').style.display = (s.view === 'home') ? 'none' : 'flex';
+  var rootTab = (s.view === 'home' || s.view === 'register' || s.view === 'tools' || s.view === 'account');
+  el('backbtn').style.display = rootTab ? 'none' : 'flex';
   m.innerHTML = html;
-  m.className = 'fade';
+  m.className = (s.view === 'home') ? 'map-page' : 'fade';
   stagger(m);
+  updateBottomNav(s.view);
+  if (s.view === 'home') setTimeout(initMainMap, 30);
+  if (s.view === 'register') setTimeout(initRegisterPage, 30);
   if (s.view === 'calc') initCalcPage(findCalc(s.cid));
 }
 
-function viewHome() {
+function viewTools() {
   var h = '';
   h += '<div class="hero"><img src="img/logo.png" alt="امنلاک">' +
        '<h1>محاسبات هوشمند ساختمان و املاک</h1>' +
        '<p>مقدار مصالح، هزینه ساخت و محاسبات معاملات ملکی را سریع، ساده و آفلاین برآورد کنید.</p>' +
        '<div style="clear:both"></div></div>';
-  h += '<div class="searchwrap"><span class="si">🔎</span>' +
+  h += '<div class="searchwrap"><span class="si">' + uiIcon('search') + '</span>' +
        '<input id="q" placeholder="جستجوی ماشین‌حساب… مثلا بتن یا کمیسیون" oninput="doSearch()"></div>';
   h += '<div id="sres"></div>';
   h += '<div id="homebody">';
   h += '<div class="sectitle">گروه محاسبات</div><div class="grid">';
   GROUPS.forEach(function (g) {
     h += '<div class="gcard" onclick="go(\'group\',\'' + g.id + '\')">' +
-         '<span class="em">' + g.em + '</span><b>' + g.name + '</b><small>' + g.sub + '</small>' +
+         '<span class="em">' + uiIcon(groupIconName(g.id)) + '</span><b>' + g.name + '</b><small>' + g.sub + '</small>' +
          '<i class="bar" style="background:' + g.color + '"></i></div>';
   });
   h += '</div>';
@@ -126,7 +182,7 @@ function viewHome() {
   if (hl.length) {
     h += '<div class="sectitle">آخرین محاسبات شما</div><div class="list">';
     hl.slice(0, 3).forEach(function (e, i) {
-      h += '<div class="hrow" onclick="histOpen(' + i + ')"><div class="em">' + e.em + '</div>' +
+      h += '<div class="hrow" onclick="histOpen(' + i + ')"><div class="em">' + uiIcon(groupIconName(e.g)) + '</div>' +
            '<div class="hb"><b>' + e.title + '</b><small>' + jalaliDate(e.ts) + '</small></div>' +
            '<div class="hv">' + fa(e.value) + '</div></div>';
     });
@@ -145,8 +201,8 @@ function viewHome() {
 
 function rowCalc(c) {
   return '<div class="row" onclick="go(\'calc\',\'' + c.g + '\',\'' + c.id + '\')">' +
-         '<div class="em">' + c.em + '</div><div><b>' + c.title + '</b><small>' + c.sub + '</small></div>' +
-         '<div class="go">❮</div></div>';
+         '<div class="em">' + uiIcon(groupIconName(c.g)) + '</div><div><b>' + c.title + '</b><small>' + c.sub + '</small></div>' +
+         '<div class="go">' + uiIcon('chevron') + '</div></div>';
 }
 
 function doSearch() {
@@ -166,7 +222,7 @@ function doSearch() {
 function viewGroup(g) {
   var items = calcsOf(g.id);
   var h = '<div class="cbanner" style="background:linear-gradient(135deg,' + g.color + ',' + g.color + 'CC)">' +
-          '<div class="em">' + g.em + '</div><div><b>' + g.name + '</b><span>' + fa(items.length) + ' ماشین‌حساب – ' + g.sub + '</span></div></div>';
+          '<div class="em">' + uiIcon(groupIconName(g.id)) + '</div><div><b>' + g.name + '</b><span>' + fa(items.length) + ' ماشین‌حساب – ' + g.sub + '</span></div></div>';
   h += '<div class="list">';
   items.forEach(function (c) { h += rowCalc(c); });
   h += '</div>';
@@ -176,7 +232,7 @@ function viewGroup(g) {
 function viewCalc(c) {
   var g = findGroup(c.g);
   var h = '<div class="cbanner" style="background:linear-gradient(135deg,' + g.color + ',' + g.color + 'BB)">' +
-          '<div class="em">' + c.em + '</div><div><b>' + c.title + '</b><span>' + c.desc + '</span></div></div>';
+          '<div class="em">' + uiIcon(groupIconName(c.g)) + '</div><div><b>' + c.title + '</b><span>' + c.desc + '</span></div></div>';
 
   h += '<div class="card" id="form">';
   c.fields.forEach(function (f) {
@@ -281,7 +337,7 @@ function doCalc(id) {
     h += '</div>';
   }
   h += '</div>';
-  h += '<button class="btn ghost" onclick="shareResult()">📤 اشتراک‌گذاری نتیجه</button>';
+  h += '<button class="btn ghost with-icon" onclick="shareResult()">' + uiIcon('share') + '<span>اشتراک‌گذاری نتیجه</span></button>';
 
   lastResultText = c.title + '\n' + r.main.label + ': ' + fa(r.main.value) + ' ' + r.main.unit +
     (r.suggest ? '\n' + r.suggest : '') +
@@ -303,17 +359,17 @@ function callUs(n) { if (window.Android && Android.call) Android.call(n); }
 function openUrl(u) { if (window.Android && Android.open) Android.open(u); else window.open(u); }
 
 function viewAbout() {
-  return '<div class="cbanner"><div class="em">ℹ️</div><div><b>امنلاک</b><span>درباره برنامه و راهنمای استفاده</span></div></div>' +
-    '<div class="tourcard"><div class="tc-em">🧭</div>' +
+  return '<div class="cbanner"><div class="em">' + uiIcon('info') + '</div><div><b>امنلاک</b><span>درباره برنامه و راهنمای استفاده</span></div></div>' +
+    '<div class="tourcard"><div class="tc-em">' + uiIcon('compass') + '</div>' +
     '<div class="tc-b"><b>تور راهنمای برنامه</b><small>معرفی گام‌به‌گام بخش‌های مختلف</small></div>' +
     '<button onclick="startTour(true)">نمایش دوباره</button></div>' +
     '<div class="infocard"><h3>درباره امنلاک</h3>' +
-    'امنلاک یک جعبه‌ابزار فارسی و آفلاین برای برآوردهای اولیه ساختمان‌سازی و معاملات ملکی است. ' +
+    'امنلاک یک سامانه نقشه‌محور برای ثبت اولیه ملک و مجموعه ابزارهای محاسبات ساختمان‌سازی و معاملات ملکی است. ' +
     'این نسخه شامل محاسبات بتن، آهن، مصالح، نازک‌کاری، متره، هزینه ساخت، کمیسیون، رهن و اجاره است.</div>' +
     '<div class="infocard"><h3>مناسب چه کسانی است؟</h3>' +
     'مالکین، سازندگان، مهندسان، مجریان، فروشندگان مصالح، مشاوران املاک، دانشجویان و همه افرادی که به یک برآورد سریع اولیه نیاز دارند.</div>' +
     '<div class="infocard"><h3>ویژگی‌ها</h3>' +
-    '• کاملاً آفلاین و بدون نیاز به ثبت‌نام<br>• جستجوی سریع بین ابزارها<br>• حالت شب و رابط فارسی راست‌چین<br>' +
+    '• نقشه OpenStreetMap و ثبت موقعیت ملک<br>• ورود آزمایشی و ارسال مشخصات برای تلگرام مدیر<br>• جستجوی سریع بین ابزارها<br>• حالت شب و رابط فارسی راست‌چین<br>' +
     '• تاریخچه محاسبات و بازکردن دوباره ورودی‌ها<br>• اشتراک‌گذاری نتیجه<br>• ' + fa(CALCS.length) + ' ماشین‌حساب در ' + fa(GROUPS.length) + ' گروه کاربردی</div>' +
 
     '<div class="sectitle">راهنمای استفاده</div>' +
@@ -330,16 +386,16 @@ function viewAbout() {
     'فرمول‌ها برای برآورد اولیه ساده‌سازی شده‌اند. نتیجه جایگزین نقشه مصوب، متره تفصیلی، نظر مهندس ناظر، تعرفه رسمی اتحادیه یا مشاوره حقوقی و مالی نیست. ' +
     'نرخ‌ها و ضرایب قابل تغییر را مطابق شرایط روز وارد کنید.</div>' +
     '<div class="infocard"><h3>وب‌سایت رسمی</h3><a onclick="openUrl(\'https://amnlak.ir\')">amnlak.ir</a></div>' +
-    '<p class="disc">نسخه اولیه ۰.۱ امنلاک<br>طراحی و توسعه: محمد جواد قهرمانی</p>';
+    '<p class="disc">نسخه آزمایشی ۰.۲ امنلاک<br>طراحی و توسعه: محمد جواد قهرمانی</p>';
 }
 
 function viewContact() {
-  return '<div class="cbanner"><div class="em">📞</div><div><b>پشتیبانی امنلاک</b><span>ثبت پیشنهاد، گزارش خطا و سفارش توسعه</span></div></div>' +
-    '<div class="contact" onclick="callUs(\'09127285065\')"><div class="em">☎️</div><div><b>تماس با توسعه‌دهنده</b><small>0912-728-5065</small></div></div>' +
-    '<div class="contact" onclick="smsTo(\'09127285065\')"><div class="em">✉️</div><div><b>ارسال پیامک</b><small>0912-728-5065</small></div></div>' +
-    '<div class="contact" onclick="openUrl(\'https://wa.me/989127285065\')"><div class="em">💬</div><div><b>واتساپ</b><small>+98 912 728 5065</small></div></div>' +
-    '<div class="contact" onclick="openUrl(\'https://t.me/+989127285065\')"><div class="em">✈️</div><div><b>تلگرام</b><small>+98 912 728 5065</small></div></div>' +
-    '<div class="contact" onclick="openUrl(\'https://amnlak.ir\')"><div class="em">🌐</div><div><b>وب‌سایت امنلاک</b><small>amnlak.ir</small></div></div>' +
+  return '<div class="cbanner"><div class="em">' + uiIcon('phone') + '</div><div><b>پشتیبانی امنلاک</b><span>ثبت پیشنهاد، گزارش خطا و سفارش توسعه</span></div></div>' +
+    '<div class="contact" onclick="callUs(\'09127285065\')"><div class="em">' + uiIcon('phone') + '</div><div><b>تماس با توسعه‌دهنده</b><small>0912-728-5065</small></div></div>' +
+    '<div class="contact" onclick="smsTo(\'09127285065\')"><div class="em">' + uiIcon('message') + '</div><div><b>ارسال پیامک</b><small>0912-728-5065</small></div></div>' +
+    '<div class="contact" onclick="openUrl(\'https://wa.me/989127285065\')"><div class="em">' + uiIcon('message') + '</div><div><b>واتساپ</b><small>+98 912 728 5065</small></div></div>' +
+    '<div class="contact" onclick="openUrl(\'https://t.me/+989127285065\')"><div class="em">' + uiIcon('send') + '</div><div><b>تلگرام</b><small>+98 912 728 5065</small></div></div>' +
+    '<div class="contact" onclick="openUrl(\'https://amnlak.ir\')"><div class="em">' + uiIcon('globe') + '</div><div><b>وب‌سایت امنلاک</b><small>amnlak.ir</small></div></div>' +
     '<div class="infocard" style="margin-top:12px">اگر ماشین‌حساب جدیدی نیاز دارید، ضریبی را نادرست می‌دانید یا پیشنهادی برای بهترشدن برنامه دارید، از راه‌های بالا با توسعه‌دهنده در ارتباط باشید.</div>';
 }
 
@@ -355,9 +411,9 @@ var DEV = {
 function smsTo(n) { if (window.Android && Android.sms) Android.sms(n, ''); }
 function copyTxt(t) { if (window.Android && Android.copy) Android.copy(t); }
 
-function soc(label, emoji, bg, url) {
+function soc(label, iconName, bg, url) {
   return '<div class="soc" onclick="openUrl(\'' + url + '\')">' +
-         '<div class="ic" style="background:' + bg + '">' + emoji + '</div><small>' + label + '</small></div>';
+         '<div class="ic" style="background:' + bg + '">' + uiIcon(iconName) + '</div><small>' + label + '</small></div>';
 }
 
 function viewDev() {
@@ -375,18 +431,18 @@ function viewDev() {
        '<button class="cp" onclick="copyTxt(\'' + p + '\')">کپی شماره</button></div>';
 
   h += '<div class="actrow">' +
-       '<button class="actbtn call" onclick="callUs(\'' + p + '\')">📞 تماس تلفنی</button>' +
-       '<button class="actbtn sms" onclick="smsTo(\'' + p + '\')">✉️ ارسال پیامک</button>' +
+       '<button class="actbtn call" onclick="callUs(\'' + p + '\')">' + uiIcon('phone') + '<span>تماس تلفنی</span></button>' +
+       '<button class="actbtn sms" onclick="smsTo(\'' + p + '\')">' + uiIcon('message') + '<span>ارسال پیامک</span></button>' +
        '</div>';
 
   h += '<div class="sectitle">شبکه‌های اجتماعی و پیام‌رسان‌ها</div>';
   h += '<div class="socgrid">' +
-       soc('بله', 'ب', 'linear-gradient(135deg,#1CA9A0,#0E7E78)', 'https://ble.ir/' + p) +
-       soc('روبیکا', 'ر', 'linear-gradient(135deg,#8B44F7,#5B1FC0)', 'https://rubika.ir/' + p) +
-       soc('ایتا', 'ا', 'linear-gradient(135deg,#FF8A00,#E06100)', 'https://eitaa.com/' + p) +
-       soc('واتساپ', '💬', 'linear-gradient(135deg,#25D366,#0F9D58)', 'https://wa.me/' + i) +
-       soc('تلگرام', '✈️', 'linear-gradient(135deg,#31A9E0,#1C7CB3)', 'https://t.me/+' + i) +
-       '<div class="soc" onclick="shareDev()"><div class="ic" style="background:linear-gradient(135deg,#6B7A90,#41506A)">↗</div><small>اشتراک‌گذاری</small></div>' +
+       soc('بله', 'message', 'linear-gradient(135deg,#1CA9A0,#0E7E78)', 'https://ble.ir/' + p) +
+       soc('روبیکا', 'message', 'linear-gradient(135deg,#8B44F7,#5B1FC0)', 'https://rubika.ir/' + p) +
+       soc('ایتا', 'message', 'linear-gradient(135deg,#FF8A00,#E06100)', 'https://eitaa.com/' + p) +
+       soc('واتساپ', 'message', 'linear-gradient(135deg,#25D366,#0F9D58)', 'https://wa.me/' + i) +
+       soc('تلگرام', 'send', 'linear-gradient(135deg,#31A9E0,#1C7CB3)', 'https://t.me/+' + i) +
+       '<div class="soc" onclick="shareDev()"><div class="ic" style="background:linear-gradient(135deg,#6B7A90,#41506A)">' + uiIcon('share') + '</div><small>اشتراک‌گذاری</small></div>' +
        '</div>';
 
   h += '<div class="sectitle">درباره توسعه‌دهنده</div>';
@@ -404,7 +460,7 @@ function viewDev() {
        'اگر ایده‌ای برای بهبود این برنامه دارید، خطایی در محاسبات دیدید، یا به ساخت اپلیکیشن اختصاصی برای کسب‌وکار خود ' +
        'نیاز دارید، از راه‌های بالا در ارتباط باشید. پاسخگویی در پیام‌رسان‌ها سریع‌تر انجام می‌شود.</div>';
 
-  h += '<p class="disc">نسخه اولیه ۰.۱ اپلیکیشن امنلاک<br>طراحی و توسعه: ' + DEV.name + '</p>';
+  h += '<p class="disc">نسخه آزمایشی ۰.۲ اپلیکیشن امنلاک<br>طراحی و توسعه: ' + DEV.name + '</p>';
   return h;
 }
 
@@ -477,21 +533,21 @@ function histOpen(i) {
 function viewHistory() {
   var l = histGet();
   var h = '<div class="cbanner" style="background:linear-gradient(135deg,#41506A,#1F2A3D)">' +
-          '<div class="em">🕘</div><div><b>تاریخچه محاسبات</b><span>' +
+          '<div class="em">' + uiIcon('clock') + '</div><div><b>تاریخچه محاسبات</b><span>' +
           (l.length ? fa(l.length) + ' محاسبه ذخیره شده – برای باز کردن مجدد لمس کنید' : 'هنوز محاسبه‌ای ذخیره نشده است') +
           '</span></div></div>';
   if (!l.length) {
     h += '<div class="empty">هر محاسبه‌ای که انجام دهید به‌صورت خودکار اینجا ذخیره می‌شود<br>و بعداً می‌توانید با همان ورودی‌ها بازش کنید.</div>';
     return h;
   }
-  h += '<div class="histbar"><button onclick="histClearAll()">🗑 پاک کردن همه</button>' +
-       '<button onclick="shareHistory()">📤 اشتراک‌گذاری فهرست</button></div>';
+  h += '<div class="histbar"><button class="with-icon" onclick="histClearAll()">' + uiIcon('trash') + '<span>پاک کردن همه</span></button>' +
+       '<button class="with-icon" onclick="shareHistory()">' + uiIcon('share') + '<span>اشتراک‌گذاری فهرست</span></button></div>';
   l.forEach(function (e, i) {
     h += '<div class="hrow" onclick="histOpen(' + i + ')">' +
-         '<div class="em">' + e.em + '</div>' +
+         '<div class="em">' + uiIcon(groupIconName(e.g)) + '</div>' +
          '<div class="hb"><b>' + e.title + '</b><small>' + jalaliDate(e.ts) + '</small></div>' +
          '<div class="hv">' + fa(e.value) + ' <small style="font-size:10px">' + e.unit + '</small></div>' +
-         '<button class="del" onclick="histDel(' + i + ',event)">✕</button></div>';
+         '<button class="del" aria-label="حذف" onclick="histDel(' + i + ',event)">' + uiIcon('close') + '</button></div>';
   });
   return h;
 }
@@ -525,16 +581,16 @@ function countUp(node, target) {
 
 /* ===================== تور راهنمای اولین اجرا ===================== */
 var TOUR = [
-  { sel: '#menubtn', em: '📂', t: 'منوی اصلی برنامه',
-    d: 'با لمس این دکمه منوی همبرگری باز می‌شود؛ همه گروه‌های ساختمانی و ملکی، تاریخچه، راهنما، پشتیبانی و اطلاعات توسعه‌دهنده از همین‌جا در دسترس است.' },
-  { sel: '#q', em: '🔎', t: 'جستجوی سریع',
-    d: 'نام ابزار مورد نظرتان را بنویسید؛ مثلاً «بتن»، «میلگرد»، «هزینه ساخت» یا «کمیسیون».' },
-  { sel: '.grid', em: '🧮', t: 'گروه‌های محاسبات',
-    d: 'ابزارها در شش گروه دسته‌بندی شده‌اند: سازه و بتن، دیوار و مصالح، نازک‌کاری، متره و عملیات، هزینه ساخت و املاک و معاملات.' },
-  { sel: '#themebtn', em: '🌙', t: 'حالت شب',
+  { sel: '#mainMap', em: '🗺️', t: 'نقشه املاک',
+    d: 'صفحه اصلی امنلاک نقشه است. ملک‌های ثبت‌شده روی گوشی به شکل نشانگر روی نقشه دیده می‌شوند.' },
+  { sel: '.map-fab', em: '➕', t: 'ثبت ملک',
+    d: 'این دکمه فرم ثبت ملک را باز می‌کند؛ موقعیت را روی نقشه انتخاب و مشخصات را تکمیل کنید.' },
+  { sel: '.bottomnav', em: '🧭', t: 'دسترسی سریع',
+    d: 'با نوار پایین بین نقشه، ثبت ملک، ماشین‌حساب‌ها و حساب کاربری جابه‌جا شوید.' },
+  { sel: '#themebtn', icon: 'moon', t: 'حالت شب',
     d: 'با این دکمه بین حالت روشن و شب جابه‌جا شوید؛ انتخاب شما ذخیره می‌شود.' },
-  { sel: null, em: '✅', t: 'آماده‌اید!',
-    d: 'هر محاسبه خودکار در تاریخچه ذخیره می‌شود و می‌توانید نتیجه را در پیام‌رسان‌ها به اشتراک بگذارید.<br><br>این راهنما از بخش «درباره ما و راهنمای استفاده» دوباره قابل اجراست.' }
+  { sel: null, icon: 'check', t: 'نسخه آزمایشی آماده است',
+    d: 'ورود پیامکی این نسخه آزمایشی است و کد ۱۲۳۴۵ دارد. اطلاعات ملک روی گوشی ذخیره و متن آن برای تلگرام مدیر آماده می‌شود.' }
 ];
 var tourIdx = -1;
 
@@ -542,10 +598,10 @@ function tourActive() { return !!el('tourWrap'); }
 function endTour(markDone) {
   var w = el('tourWrap'); if (w) w.parentNode.removeChild(w);
   tourIdx = -1;
-  if (markDone) { try { localStorage.setItem('tourDone', '1'); } catch (e) {} }
+  if (markDone) { try { localStorage.setItem('tourDone02', '1'); } catch (e) {} }
 }
 function startTour(force) {
-  if (!force) { try { if (localStorage.getItem('tourDone')) return; } catch (e) {} }
+  if (!force) { try { if (localStorage.getItem('tourDone02')) return; } catch (e) {} }
   if (state.view !== 'home') render({ view: 'home' });
   drawerOpen(false);
   endTour(false);
@@ -579,7 +635,7 @@ function showTourStep() {
   var dots = '';
   for (var i = 0; i < TOUR.length; i++) dots += '<i class="' + (i === tourIdx ? 'on' : '') + '"></i>';
   tip.innerHTML =
-    '<h4>' + st.em + ' ' + st.t + '</h4>' +
+    '<h4>' + uiIcon(st.icon) + '<span>' + st.t + '</span></h4>' +
     '<p>' + st.d + '</p>' +
     '<div class="tour-actions">' +
       '<div class="tour-dots">' + dots + '</div><div class="sp"></div>' +
@@ -605,7 +661,12 @@ function endSplash() {
   var sp = el('splash');
   if (sp) {
     sp.classList.add('out');
-    setTimeout(function () { if (sp.parentNode) sp.parentNode.removeChild(sp); }, 500);
+    setTimeout(function () {
+      if (sp.parentNode) sp.parentNode.removeChild(sp);
+      document.body.classList.remove('splashing');
+    }, 500);
+  } else {
+    document.body.classList.remove('splashing');
   }
   applyTheme(isDark(), false);                 // بازگرداندن رنگ نوار وضعیت
   setTimeout(function () { startTour(false); }, 450);
@@ -625,6 +686,7 @@ function runSplash() {
 
 /* ---------- شروع ---------- */
 document.addEventListener('DOMContentLoaded', function () {
+  hydrateStaticIcons();
   buildDrawer();
   render({ view: 'home' });
   initTheme();

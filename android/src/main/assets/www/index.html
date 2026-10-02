@@ -4,16 +4,18 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
 <title>امنلاک</title>
+<link rel="stylesheet" href="vendor/leaflet/leaflet.css">
 <link rel="stylesheet" href="styles.css">
+<link rel="stylesheet" href="property.css">
 </head>
-<body>
+<body class="splashing">
 
 <div class="splash" id="splash">
   <div class="sp-glow"></div>
   <img class="sp-gif" id="spgif" src="img/logo.png" alt="امنلاک">
   <div class="sp-txt" id="sptxt">
-    <b>ساختن، سنجیدن، مطمئن شدن</b>
-    <span>امنلاک</span>
+    <b>املاک تخصص ماست</b>
+    <span>دیوار که جای ملک نیست</span>
   </div>
   <div class="sp-hint" id="sphint">برای رد کردن لمس کنید</div>
 </div>
@@ -43,12 +45,21 @@
   </div>
   <div class="dscroll" id="dscroll"></div>
   <div class="dbottom" id="dbottom"></div>
-  <div class="dfoot">ساختمان و املاک، دقیق‌تر و ساده‌تر • نسخه ۰.۱</div>
+  <div class="dfoot">ساختمان و املاک، دقیق‌تر و ساده‌تر • نسخه آزمایشی ۰.۲</div>
 </nav>
 
 <main id="main"></main>
 
+<nav class="bottomnav" id="bottomnav" aria-label="ناوبری اصلی">
+  <button class="bn on" data-view="home" onclick="goTab('home')"><span class="bn-symbol" data-ui-icon="map"></span><b>نقشه</b></button>
+  <button class="bn" data-view="register" onclick="goTab('register')"><span class="bn-symbol" data-ui-icon="plus"></span><b>ثبت ملک</b></button>
+  <button class="bn" data-view="tools" onclick="goTab('tools')"><span class="bn-symbol" data-ui-icon="calculator"></span><b>محاسبات</b></button>
+  <button class="bn" data-view="account" onclick="goTab('account')"><span class="bn-symbol" data-ui-icon="user"></span><b>حساب من</b></button>
+</nav>
+
+<script src="vendor/leaflet/leaflet.js"></script>
 <script src="calculators.js"></script>
 <script src="app.js"></script>
+<script src="property.js"></script>
 </body>
 </html>

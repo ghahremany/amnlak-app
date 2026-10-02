@@ -1,0 +1,40 @@
+/* این فایل عمداً جداست تا توسعه بخش املاک مستقل از استایل محاسبات باشد. */
+
+/* ناوبری پایین */
+.bottomnav{position:fixed;right:0;left:0;bottom:0;height:70px;z-index:45;background:rgba(255,255,255,.96);border-top:1px solid var(--line);display:grid;grid-template-columns:repeat(4,1fr);padding:4px max(6px,env(safe-area-inset-right)) calc(4px + env(safe-area-inset-bottom));box-shadow:0 -4px 20px rgba(6,35,75,.12);backdrop-filter:blur(12px)}
+.bn{border:0;background:transparent;color:var(--muted);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;border-radius:13px;padding:3px 2px;position:relative}
+.bn span{font-size:21px;line-height:1.25}.bn b{font-size:10.5px;font-weight:500}.bn.on{color:var(--blue);background:#075FB50D}.bn.on::before{content:'';position:absolute;top:-5px;width:32px;height:3px;border-radius:0 0 4px 4px;background:linear-gradient(90deg,var(--blue),#F3A712)}
+body.dark .bottomnav{background:rgba(17,26,39,.96);border-color:#25324A}.bottom-hidden{display:none!important}
+main{padding-bottom:94px}
+
+/* صفحه نقشه */
+main.map-page{padding:60px 0 70px;max-width:none;width:100%;height:100vh;min-height:540px;animation:none;position:relative}
+.map-shell{height:100%;width:100%;position:relative;background:#dbe8f4;overflow:hidden}
+#mainMap{height:100%;width:100%;z-index:1}
+.map-location{position:absolute;z-index:500;right:18px;bottom:20px;width:52px;height:52px;border:1px solid rgba(7,95,181,.16);border-radius:50%;background:rgba(255,255,255,.96);color:#075FB5;display:flex;align-items:center;justify-content:center;box-shadow:0 7px 22px rgba(7,48,90,.25);backdrop-filter:blur(10px)}
+.map-location:active{transform:scale(.94);background:#EAF4FF}.map-location svg{width:26px;height:26px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}.map-location.locating svg{animation:locationPulse .8s ease-in-out infinite alternate}@keyframes locationPulse{to{transform:scale(.72);opacity:.45}}
+.leaflet-container{font-family:'Vazirmatn',sans-serif;direction:rtl}.leaflet-popup-content-wrapper{border-radius:16px}.leaflet-popup-content{margin:12px 14px;line-height:1.8;text-align:right}.leaflet-control-attribution{font-size:8px!important}
+.p-popup b{display:block;color:#075FB5;font-size:13px}.p-popup small{display:block;color:#6B7A90}.p-popup span{font-size:11px;background:#FFF4D6;color:#8A6410;border-radius:10px;padding:2px 7px}
+
+/* ثبت ملک */
+.prop-wrap{padding-bottom:10px}.proto-alert{background:linear-gradient(135deg,#FFF4D6,#FFF9EC);border:1px solid #F2D58B;color:#75540D;border-radius:16px;padding:12px 14px;font-size:12px;margin-bottom:13px}.proto-alert b{display:block;color:#9A6800}
+.auth-card{text-align:center;padding:22px 16px}.auth-logo{width:76px;height:76px;object-fit:contain;margin:0 auto 7px}.auth-card h2{font-size:18px;margin:0}.auth-card p{font-size:12px;color:var(--muted);margin:5px 0 14px}.otp-hint{display:none;background:#E8F7F0;border:1px dashed #72C8A4;color:#156947;border-radius:12px;padding:8px 10px;margin:10px 0;font-size:12px}.otp-hint.on{display:block}.auth-actions{display:flex;gap:8px;margin-top:10px}.auth-actions .btn{padding:12px;font-size:13px}.auth-actions .ghost{flex:0 0 38%}
+.form-section{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:15px 14px;margin-bottom:12px;box-shadow:var(--shadow)}.form-section h3{margin:0 0 11px;font-size:14px;display:flex;align-items:center;gap:7px}.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.form-grid .wide{grid-column:1/-1}.pf label{display:block;font-size:11.5px;font-weight:500;margin-bottom:5px;color:#41506A}.pf input,.pf select,.pf textarea{width:100%;border:1.5px solid var(--line);border-radius:12px;padding:11px 10px;background:#FAFCFF;color:var(--ink);outline:none;font-family:inherit}.pf textarea{min-height:88px;resize:vertical}.pf input:focus,.pf select:focus,.pf textarea:focus{border-color:#13A1DC;background:var(--card)}
+#pickMap{height:260px;border-radius:15px;overflow:hidden;border:1px solid var(--line);margin-bottom:8px;z-index:1}.coord{display:flex;justify-content:space-between;gap:8px;color:var(--muted);font-size:10.5px}.coord span{direction:ltr}.loc-help{font-size:11px;color:#075FB5;margin:0 0 8px}
+.trx{display:grid;grid-template-columns:1fr 1fr;gap:8px}.trx button{border:1.5px solid var(--line);background:#FAFCFF;border-radius:13px;padding:11px;color:#41506A}.trx button.on{background:#E8F2FD;border-color:#075FB5;color:#075FB5;font-weight:700}
+.feature-picks{display:flex;flex-wrap:wrap;gap:7px}.feature-picks label{border:1px solid var(--line);border-radius:20px;padding:6px 10px;font-size:11px;background:#FAFCFF}.feature-picks input{accent-color:#075FB5}.filebox{border:1.5px dashed #AAC4E4;border-radius:14px;padding:13px;text-align:center;background:#F7FAFF}.filebox input{font-size:11px;max-width:100%}.file-preview{font-size:10.5px;color:var(--muted);margin-top:6px}
+.price-sale,.price-rent{display:none}.price-sale.on,.price-rent.on{display:block}
+.submit-note{text-align:center;font-size:10.5px;color:var(--muted);margin:8px 4px}.send-btn{background:linear-gradient(120deg,#1C93D2,#2FB5EE)!important;box-shadow:0 6px 18px rgba(28,147,210,.3)!important}
+
+/* حساب و املاک */
+.profile-head{background:linear-gradient(135deg,#052D5C,#075FB5 60%,#D88B00 150%);color:#fff;border-radius:22px;padding:20px 16px;text-align:center;box-shadow:var(--shadow)}.profile-head .avatar{width:70px;height:70px;margin:0 auto 8px;border-radius:50%;background:rgba(255,255,255,.16);display:flex;align-items:center;justify-content:center;font-size:31px;border:2px solid rgba(255,255,255,.25)}.profile-head b{display:block;font-size:17px}.profile-head small{opacity:.8}.profile-stat{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}.profile-stat div{background:rgba(255,255,255,.12);border-radius:13px;padding:8px}.profile-stat strong{display:block;font-size:18px}.profile-stat span{font-size:10px;opacity:.85}.property-row{background:var(--card);border:1px solid var(--line);border-radius:15px;padding:12px;margin-bottom:9px;display:flex;gap:10px;align-items:center}.property-row .ico{width:42px;height:42px;border-radius:12px;background:#EAF4FF;display:flex;align-items:center;justify-content:center;font-size:20px}.property-row .body{flex:1;min-width:0}.property-row b{display:block;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.property-row small{color:var(--muted);font-size:10.5px}.status{font-size:9.5px;background:#FFF4D6;color:#8A6410;border-radius:20px;padding:3px 7px;white-space:nowrap}.empty-props{text-align:center;padding:25px 10px;color:var(--muted)}.logout{margin-top:12px;color:#D13D4D!important}
+
+body.dark .map-location{background:rgba(17,26,39,.96);color:#56BFF2;border-color:#25324A}
+body.dark .form-section,body.dark .property-row,body.dark .auth-card{background:var(--card);border-color:#25324A}body.dark .pf input,body.dark .pf select,body.dark .pf textarea,body.dark .trx button,body.dark .feature-picks label{background:#101A28;border-color:#25324A;color:var(--ink)}body.dark .pf label{color:#B9C7DA}body.dark .filebox{background:#101A28;border-color:#31547E}.map-page~.bottomnav{display:grid}
+
+
+/* آیکون‌های خطی بخش املاک */
+.bn .bn-symbol{height:27px;display:flex;align-items:center;justify-content:center;font-size:0}.bn .bn-symbol .ui-icon{width:23px;height:23px;stroke-width:1.8}.bn.on .bn-symbol .ui-icon{stroke-width:2.15}
+.form-section h3 .ui-icon{width:19px;height:19px;color:#075FB5}.file-title{display:inline-flex;align-items:center;gap:6px}.file-title .ui-icon{width:19px;height:19px;color:#075FB5}
+.profile-head .avatar .ui-icon{width:34px;height:34px}.property-row .ico .ui-icon{width:22px;height:22px;color:#075FB5}.send-btn .ui-icon{width:19px;height:19px}
+body.dark .form-section h3 .ui-icon,body.dark .file-title .ui-icon,body.dark .property-row .ico .ui-icon{color:#61C8F2}

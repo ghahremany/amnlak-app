@@ -14,8 +14,11 @@ build/
 Thumbs.db
 *.log
 
-# بسته‌های خروجی محلی
+# اسرار و بسته‌های تحویل خصوصی
+.signing-secrets
+.backup-delivery-info
+amnlak-signing-key-backup.zip
+amnlak-complete-package-*.zip
+bazaar-release/
 *.zip
-
-# گردش‌کار محلی (توکن OAuth فعلی مجوز workflow ندارد)
 .github/workflows/

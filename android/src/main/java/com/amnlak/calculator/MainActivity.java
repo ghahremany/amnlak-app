@@ -6,13 +6,19 @@ import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Looper;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.JavascriptInterface;
 import android.webkit.ValueCallback;
+import android.webkit.WebChromeClient;
 import android.webkit.WebResourceRequest;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
@@ -22,6 +28,11 @@ import android.widget.Toast;
 public class MainActivity extends Activity {
 
     private WebView web;
+    private ValueCallback<Uri[]> filePathCallback;
+    private LocationManager locationManager;
+    private LocationListener locationListener;
+    private static final int FILE_CHOOSER_REQUEST = 1001;
+    private static final int LOCATION_PERMISSION_REQUEST = 1002;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,6 +67,23 @@ public class MainActivity extends Activity {
             }
         });
 
+        web.setWebChromeClient(new WebChromeClient() {
+            @Override
+            public boolean onShowFileChooser(WebView webView, ValueCallback<Uri[]> callback,
+                                             FileChooserParams params) {
+                if (filePathCallback != null) filePathCallback.onReceiveValue(null);
+                filePathCallback = callback;
+                try {
+                    startActivityForResult(params.createIntent(), FILE_CHOOSER_REQUEST);
+                    return true;
+                } catch (ActivityNotFoundException e) {
+                    filePathCallback = null;
+                    Toast.makeText(MainActivity.this, "فایل‌خوان روی گوشی در دسترس نیست", Toast.LENGTH_SHORT).show();
+                    return false;
+                }
+            }
+        });
+
         web.addJavascriptInterface(new Bridge(), "Android");
         web.loadUrl("file:///android_asset/www/index.html");
         setContentView(web);
@@ -64,6 +92,103 @@ public class MainActivity extends Activity {
             View d = getWindow().getDecorView();
             d.setSystemUiVisibility(d.getSystemUiVisibility());
         }
+    }
+
+    private void requestUserLocation() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M
+                && checkSelfPermission(android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                && checkSelfPermission(android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            requestPermissions(new String[] {
+                    android.Manifest.permission.ACCESS_FINE_LOCATION,
+                    android.Manifest.permission.ACCESS_COARSE_LOCATION
+            }, LOCATION_PERMISSION_REQUEST);
+            return;
+        }
+        findAndSendLocation();
+    }
+
+    private void findAndSendLocation() {
+        try {
+            locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+            if (locationManager == null) { sendLocationErrorToWeb(); return; }
+            if (locationListener != null) {
+                try { locationManager.removeUpdates(locationListener); }
+                catch (SecurityException ignored) {}
+            }
+
+            Location best = null;
+            String[] providers = new String[] {
+                    LocationManager.NETWORK_PROVIDER,
+                    LocationManager.GPS_PROVIDER
+            };
+            for (String provider : providers) {
+                try {
+                    Location candidate = locationManager.getLastKnownLocation(provider);
+                    if (candidate != null && (best == null
+                            || candidate.getTime() > best.getTime()
+                            || (candidate.hasAccuracy() && best.hasAccuracy()
+                                && candidate.getAccuracy() < best.getAccuracy()))) {
+                        best = candidate;
+                    }
+                } catch (SecurityException ignored) {}
+            }
+            if (best != null) sendLocationToWeb(best);
+
+            locationListener = new LocationListener() {
+                @Override
+                public void onLocationChanged(Location location) {
+                    sendLocationToWeb(location);
+                }
+                @Override public void onStatusChanged(String provider, int status, Bundle extras) {}
+                @Override public void onProviderEnabled(String provider) {}
+                @Override public void onProviderDisabled(String provider) {}
+            };
+
+            boolean providerRequested = false;
+            for (String provider : providers) {
+                try {
+                    if (locationManager.isProviderEnabled(provider)) {
+                        locationManager.requestSingleUpdate(provider, locationListener, Looper.getMainLooper());
+                        providerRequested = true;
+                    }
+                } catch (SecurityException ignored) {}
+            }
+            if (!providerRequested && best == null) sendLocationErrorToWeb();
+        } catch (Exception ignored) {
+            sendLocationErrorToWeb();
+        }
+    }
+
+    private void sendLocationToWeb(final Location location) {
+        if (location == null || web == null) return;
+        final String js = "window.onNativeLocation && window.onNativeLocation("
+                + Double.toString(location.getLatitude()) + ","
+                + Double.toString(location.getLongitude()) + ","
+                + Float.toString(location.hasAccuracy() ? location.getAccuracy() : 0f) + ")";
+        runOnUiThread(new Runnable() {
+            @Override public void run() { web.evaluateJavascript(js, null); }
+        });
+    }
+
+    private void sendLocationErrorToWeb() {
+        if (web == null) return;
+        runOnUiThread(new Runnable() {
+            @Override public void run() {
+                web.evaluateJavascript("window.onNativeLocationError && window.onNativeLocationError()", null);
+            }
+        });
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode != LOCATION_PERMISSION_REQUEST) return;
+        boolean granted = false;
+        for (int result : grantResults) {
+            if (result == PackageManager.PERMISSION_GRANTED) { granted = true; break; }
+        }
+        if (granted) findAndSendLocation();
+        else sendLocationErrorToWeb();
     }
 
     private boolean handleUrl(String url) {
@@ -77,6 +202,13 @@ public class MainActivity extends Activity {
     }
 
     public class Bridge {
+        @JavascriptInterface
+        public void requestLocation() {
+            runOnUiThread(new Runnable() {
+                @Override public void run() { requestUserLocation(); }
+            });
+        }
+
         @JavascriptInterface
         public void share(final String text) {
             runOnUiThread(new Runnable() {
@@ -123,7 +255,7 @@ public class MainActivity extends Activity {
                 public void run() {
                     ClipboardManager cm = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
                     cm.setPrimaryClip(ClipData.newPlainText("amnlak", text));
-                    Toast.makeText(MainActivity.this, "کپی شد: " + text, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(MainActivity.this, "متن در کلیپ‌بورد کپی شد", Toast.LENGTH_SHORT).show();
                 }
             });
         }
@@ -169,6 +301,29 @@ public class MainActivity extends Activity {
                 public void run() { finish(); }
             });
         }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == FILE_CHOOSER_REQUEST && filePathCallback != null) {
+            Uri[] result = WebChromeClient.FileChooserParams.parseResult(resultCode, data);
+            filePathCallback.onReceiveValue(result);
+            filePathCallback = null;
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        if (locationManager != null && locationListener != null) {
+            try { locationManager.removeUpdates(locationListener); }
+            catch (SecurityException ignored) {}
+        }
+        if (web != null) {
+            web.removeJavascriptInterface("Android");
+            web.destroy();
+        }
+        super.onDestroy();
     }
 
     @Override

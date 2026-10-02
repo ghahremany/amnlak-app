@@ -1,0 +1,28 @@
+AMNLAK — CAFE BAZAAR RELEASE INFORMATION
+==========================================
+
+App name: امنلاک
+English name: amnlak
+Package: com.amnlak.calculator
+Version name: 0.1
+Version code: 1
+Minimum SDK: 21 (Android 5.0)
+Target SDK: 34 (Android 14)
+Release APK: amnlak-v0.1-bazaar.apk
+APK size: 1,317,604 bytes
+APK SHA-256: 6e644f71f9283cf55faea4732b94acecfb041c3c70fedc02c2721a6bc4e1e802
+Runtime permissions: none
+Native libraries: none
+
+SIGNING CERTIFICATE
+-------------------
+DN: CN=Mohammad Javad Ghahremani, OU=amnlak, O=amnlak, L=Tehran, ST=Tehran, C=IR
+Algorithm: RSA 4096 / SHA256withRSA
+Valid: 2026-10-01 through 2056-09-23
+SHA-1: 40:1D:B4:F6:2A:5F:07:6C:5E:0B:D6:7F:5A:9D:41:D5:85:D8:E3:3E
+SHA-256: 92:58:77:CA:00:28:B8:9B:22:6C:3E:33:2B:50:A9:59:34:9E:F5:1F:5A:F9:2B:66:8F:A0:31:CB:64:C9:84:17
+
+IMPORTANT
+---------
+Keep amnlak-release.jks and its password permanently and privately.
+Every future update for com.amnlak.calculator must use this exact key.

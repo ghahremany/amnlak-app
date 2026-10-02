@@ -346,6 +346,8 @@ body.dark .tourcard{border-color:#13A1DC;background:var(--card)}
   overflow:hidden;transition:opacity .45s ease;
 }
 .splash.out{opacity:0;pointer-events:none}
+/* ناوبری و دکمه‌های عملیاتی تا پایان صفحه ورود نمایش داده نمی‌شوند. */
+body.splashing .bottomnav,body.splashing .map-location{visibility:hidden!important}
 .sp-glow{
   position:absolute;width:150vw;height:150vw;border-radius:50%;
   background:radial-gradient(circle at 35% 45%, rgba(197,25,45,.30), transparent 55%),
@@ -354,7 +356,7 @@ body.dark .tourcard{border-color:#13A1DC;background:var(--card)}
 }
 @keyframes glowpulse{0%,100%{transform:scale(1);opacity:.85}50%{transform:scale(1.08);opacity:1}}
 .sp-gif{
-  width:min(74vw,330px);height:auto;position:relative;z-index:2;
+  width:min(62vw,270px);height:auto;position:relative;z-index:2;object-fit:contain;
   animation:spin-in .9s cubic-bezier(.2,.8,.3,1);
   transition:transform .6s cubic-bezier(.3,.9,.3,1), margin .6s ease;
 }
@@ -371,7 +373,7 @@ body.dark .tourcard{border-color:#13A1DC;background:var(--card)}
   -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;color:#fff;
 }
 .sp-txt span{
-  display:block;margin-top:9px;font-size:15px;color:#C9D6EA;letter-spacing:3px;
+  display:block;margin-top:9px;font-size:15px;color:#C9D6EA;letter-spacing:0;
 }
 .sp-txt span::before,.sp-txt span::after{content:'';display:inline-block;width:26px;height:1px;background:linear-gradient(90deg,transparent,#61C8F2);vertical-align:middle;margin:0 9px}
 .sp-txt span::after{background:linear-gradient(90deg,#F8BE38,transparent)}
@@ -379,3 +381,19 @@ body.dark .tourcard{border-color:#13A1DC;background:var(--card)}
   position:absolute;bottom:26px;z-index:2;font-size:11px;color:#5C6B85;opacity:0;transition:opacity .5s ease;
 }
 .sp-hint.show{opacity:1}
+
+
+/* ===================== سیستم آیکون خطی مینیمال ===================== */
+.ui-icon{width:22px;height:22px;display:inline-block;vertical-align:middle;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;flex:0 0 auto}
+.ditem .dico{color:var(--blue)}.ditem .dico .ui-icon{width:18px;height:18px}.ditem .chev{display:flex;align-items:center;justify-content:center}.ditem .chev .ui-icon{width:15px;height:15px;transition:transform .2s}.ditem.open .chev .ui-icon{transform:rotate(90deg)}
+.searchwrap .si{display:flex;align-items:center;justify-content:center}.searchwrap .si .ui-icon{width:20px;height:20px}
+.gcard .em{height:38px;display:flex;align-items:center;justify-content:center;color:var(--blue)}.gcard .em .ui-icon{width:31px;height:31px;stroke-width:1.65}
+.list .row .em .ui-icon,.hrow .em .ui-icon,.contact .em .ui-icon{width:21px;height:21px}
+.cbanner .em{display:flex;align-items:center;justify-content:center}.cbanner .em .ui-icon{width:32px;height:32px;stroke-width:1.65}
+.go{display:flex;align-items:center}.go .ui-icon{width:17px;height:17px}.row .go .ui-icon{transform:rotate(180deg)}
+.with-icon{display:flex!important;align-items:center;justify-content:center;gap:8px}.with-icon .ui-icon,.actbtn .ui-icon{width:19px;height:19px}
+.tc-em{display:flex!important;align-items:center;justify-content:center}.tc-em .ui-icon{width:22px;height:22px}
+.soc .ic .ui-icon{width:22px;height:22px;stroke-width:1.9}.actbtn{gap:8px}.actbtn .ui-icon{color:#fff}
+.histbar .with-icon{gap:6px}.histbar .with-icon .ui-icon{width:17px;height:17px}.hrow .del{display:flex;align-items:center;justify-content:center}.hrow .del .ui-icon{width:17px;height:17px}
+.tour-tip h4 .ui-icon{width:21px;height:21px;color:var(--blue)}
+body.dark .ditem .dico,body.dark .gcard .em{color:#7FCBFF}
