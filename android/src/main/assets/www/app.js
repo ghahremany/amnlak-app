@@ -157,7 +157,11 @@ function render(s, isBack) {
   updateBottomNav(s.view);
   if (s.view === 'home') setTimeout(initMainMap, 30);
   if (s.view === 'register') setTimeout(initRegisterPage, 30);
-  if (s.view === 'calc') initCalcPage(findCalc(s.cid));
+  if (s.view === 'calc') {
+    var activeCalc = findCalc(s.cid);
+    if (activeCalc && activeCalc.special === 'utm') setTimeout(initUtmTool, 30);
+    else initCalcPage(activeCalc);
+  }
 }
 
 function viewTools() {
@@ -189,7 +193,7 @@ function viewTools() {
     h += '</div><div style="text-align:center;margin:-2px 0 4px"><a onclick="go(\'history\')" style="font-size:12.5px">مشاهده همه تاریخچه ›</a></div>';
   }
   h += '<div class="sectitle">پرکاربردترین محاسبات</div><div class="list">';
-  ['foundationConcrete', 'rebarWeight', 'blockCount', 'constructionCost', 'saleCommission', 'rentCommission'].forEach(function (id) {
+  ['utmSketch', 'foundationConcrete', 'rebarWeight', 'blockCount', 'constructionCost', 'saleCommission', 'rentCommission'].forEach(function (id) {
     var c = findCalc(id);
     h += rowCalc(c);
   });
@@ -230,6 +234,7 @@ function viewGroup(g) {
 }
 
 function viewCalc(c) {
+  if (c && c.special === 'utm') return viewUtmTool(c);
   var g = findGroup(c.g);
   var h = '<div class="cbanner" style="background:linear-gradient(135deg,' + g.color + ',' + g.color + 'BB)">' +
           '<div class="em">' + uiIcon(groupIconName(c.g)) + '</div><div><b>' + c.title + '</b><span>' + c.desc + '</span></div></div>';

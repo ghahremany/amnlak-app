@@ -13,7 +13,7 @@ main.map-page{padding:60px 0 70px;max-width:none;width:100%;height:100vh;min-hei
 #mainMap{height:100%;width:100%;z-index:1}
 .map-location{position:absolute;z-index:500;right:18px;bottom:20px;width:52px;height:52px;border:1px solid rgba(7,95,181,.16);border-radius:50%;background:rgba(255,255,255,.96);color:#075FB5;display:flex;align-items:center;justify-content:center;box-shadow:0 7px 22px rgba(7,48,90,.25);backdrop-filter:blur(10px)}
 .map-location:active{transform:scale(.94);background:#EAF4FF}.map-location svg{width:26px;height:26px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}.map-location.locating svg{animation:locationPulse .8s ease-in-out infinite alternate}@keyframes locationPulse{to{transform:scale(.72);opacity:.45}}
-.leaflet-container{font-family:'Vazirmatn',sans-serif;direction:rtl}.leaflet-popup-content-wrapper{border-radius:16px}.leaflet-popup-content{margin:12px 14px;line-height:1.8;text-align:right}.leaflet-control-attribution{font-size:8px!important}
+.leaflet-container{font-family:'Vazirmatn',sans-serif;direction:rtl}.leaflet-popup-content-wrapper{border-radius:16px}.leaflet-popup-content{margin:12px 14px;line-height:1.8;text-align:right}.leaflet-control-attribution{display:none!important}
 .p-popup b{display:block;color:#075FB5;font-size:13px}.p-popup small{display:block;color:#6B7A90}.p-popup span{font-size:11px;background:#FFF4D6;color:#8A6410;border-radius:10px;padding:2px 7px}
 
 /* ثبت ملک */

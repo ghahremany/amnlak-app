@@ -10,15 +10,17 @@ MainActivity.java ── loadUrl ──► assets/www/index.html
         └──── window.Android bridge ───┘
 ```
 
-پل جاوااسکریپت این متدها را ارائه می‌کند: `share`، `call`، `sms`، `copy`، `open`، `toast`، `theme` و `exit`.
+پل جاوااسکریپت این متدها را ارائه می‌کند: `requestLocation`، `requestFreshLocation`، `printHtml`، `share`، `call`، `sms`، `copy`، `open`، `toast`، `theme` و `exit`.
 
 ## فایل‌های اصلی
 
 - `calculators.js`: آرایه‌های `GROUPS` و `CALCS`، فرمول‌ها و توابع کمکی
 - `app.js`: رابط کاربری، مسیریابی، جستجو، تاریخچه، تاریخ شمسی، تم و صفحات جانبی
 - `styles.css`: طراحی روشن/تیره و انیمیشن‌ها
+- `property.js` و `property.css`: نقشه اصلی، موقعیت، ورود و ثبت ملک
+- `utm.js` و `utm.css`: تبدیل WGS84/UTM، ترسیم محدوده، محاسبه هندسی و گزارش چاپ
 - `index.html`: نوار بالا، منو، اسپلش و محل رندر صفحات
-- `MainActivity.java`: WebView و ارتباط با امکانات اندروید
+- `MainActivity.java`: WebView، مجوز/GPS و پل چاپ بومی اندروید
 
 ## افزودن ماشین‌حساب
 

@@ -105,6 +105,7 @@ window.onNativeLocation = function (lat, lng, accuracy) {
 };
 window.onNativeLocationError = function () {
   clearLocationButtonState();
+  if (window.onUtmLocationError) { try { window.onUtmLocationError(); } catch (e) {} }
   if (LOCATION_MANUAL_REQUEST) toastMsg('موقعیت در دسترس نیست؛ GPS و مجوز مکان را بررسی کنید');
   LOCATION_MANUAL_REQUEST = false;
 };
@@ -150,10 +151,9 @@ function initMainMap() {
   MAP_FOCUSING_PROPERTY = false;
   var stored = storedUserLocation();
   var start = stored ? [stored.lat, stored.lng] : [35.6892, 51.3890];
-  MAIN_MAP = L.map('mainMap', { zoomControl: true, attributionControl: true }).setView(start, stored ? 16 : 15);
+  MAIN_MAP = L.map('mainMap', { zoomControl: true, attributionControl: false }).setView(start, stored ? 16 : 15);
   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    maxZoom: 19,
-    attribution: '© OpenStreetMap'
+    maxZoom: 19
   }).addTo(MAIN_MAP);
 
   var list = propsGet(), focusId = null;

@@ -1,6 +1,7 @@
 package com.amnlak.calculator;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.ActivityNotFoundException;
 import android.content.ClipData;
 import android.content.ClipboardManager;
@@ -14,6 +15,10 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Looper;
+import android.print.PrintAttributes;
+import android.print.PrintDocumentAdapter;
+import android.print.PrintManager;
+import android.provider.Settings;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.JavascriptInterface;
@@ -28,11 +33,19 @@ import android.widget.Toast;
 public class MainActivity extends Activity {
 
     private WebView web;
+    private WebView printWeb;
     private ValueCallback<Uri[]> filePathCallback;
     private LocationManager locationManager;
     private LocationListener locationListener;
+    private boolean permissionDialogVisible;
+    private boolean locationDialogVisible;
+    private boolean waitingForAppSettings;
+    private boolean waitingForLocationSettings;
+    private boolean freshLocationRequested;
     private static final int FILE_CHOOSER_REQUEST = 1001;
     private static final int LOCATION_PERMISSION_REQUEST = 1002;
+    private static final String LOCATION_PREFS = "amnlak_location_preferences";
+    private static final String LOCATION_PERMISSION_ASKED = "location_permission_asked";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -94,33 +107,157 @@ public class MainActivity extends Activity {
         }
     }
 
+    private boolean hasLocationPermission() {
+        return Build.VERSION.SDK_INT < Build.VERSION_CODES.M
+                || checkSelfPermission(android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
+                || checkSelfPermission(android.Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED;
+    }
+
+    private boolean isLocationServiceEnabled() {
+        try {
+            locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+            if (locationManager == null) return false;
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                return locationManager.isLocationEnabled();
+            }
+            return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)
+                    || locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
+        } catch (Exception ignored) {
+            return false;
+        }
+    }
+
     private void requestUserLocation() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M
-                && checkSelfPermission(android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
-                && checkSelfPermission(android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            requestPermissions(new String[] {
-                    android.Manifest.permission.ACCESS_FINE_LOCATION,
-                    android.Manifest.permission.ACCESS_COARSE_LOCATION
-            }, LOCATION_PERMISSION_REQUEST);
+        if (!hasLocationPermission()) {
+            requestOrExplainLocationPermission();
+            return;
+        }
+        if (!isLocationServiceEnabled()) {
+            showLocationDisabledDialog();
             return;
         }
         findAndSendLocation();
+    }
+
+    private void requestOrExplainLocationPermission() {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+            requestUserLocation();
+            return;
+        }
+        boolean askedBefore = getSharedPreferences(LOCATION_PREFS, MODE_PRIVATE)
+                .getBoolean(LOCATION_PERMISSION_ASKED, false);
+        boolean canExplain = shouldShowRequestPermissionRationale(android.Manifest.permission.ACCESS_FINE_LOCATION)
+                || shouldShowRequestPermissionRationale(android.Manifest.permission.ACCESS_COARSE_LOCATION);
+        if (!askedBefore) {
+            requestLocationPermissionFromSystem();
+        } else if (canExplain) {
+            showPermissionExplanationDialog();
+        } else {
+            showPermissionSettingsDialog();
+        }
+    }
+
+    private void requestLocationPermissionFromSystem() {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+            requestUserLocation();
+            return;
+        }
+        getSharedPreferences(LOCATION_PREFS, MODE_PRIVATE).edit()
+                .putBoolean(LOCATION_PERMISSION_ASKED, true).apply();
+        requestPermissions(new String[] {
+                android.Manifest.permission.ACCESS_FINE_LOCATION,
+                android.Manifest.permission.ACCESS_COARSE_LOCATION
+        }, LOCATION_PERMISSION_REQUEST);
+    }
+
+    private void showPermissionExplanationDialog() {
+        if (permissionDialogVisible || isFinishing()) return;
+        permissionDialogVisible = true;
+        new AlertDialog.Builder(this)
+                .setTitle("اجازه دسترسی به موقعیت")
+                .setMessage("برای نمایش محل شما روی نقشه، امنلاک به مجوز موقعیت مکانی نیاز دارد.")
+                .setPositiveButton("دادن مجوز", (dialog, which) -> requestLocationPermissionFromSystem())
+                .setNegativeButton("فعلاً نه", (dialog, which) -> sendLocationErrorToWeb())
+                .setOnDismissListener(dialog -> permissionDialogVisible = false)
+                .show();
+    }
+
+    private void showPermissionSettingsDialog() {
+        if (permissionDialogVisible || isFinishing()) return;
+        permissionDialogVisible = true;
+        new AlertDialog.Builder(this)
+                .setTitle("مجوز موقعیت غیرفعال است")
+                .setMessage("مجوز موقعیت امنلاک داده نشده یا قبلاً رد شده است. وارد تنظیمات برنامه شوید و Location یا موقعیت مکانی را فعال کنید.")
+                .setPositiveButton("تنظیمات برنامه", (dialog, which) -> openAppLocationSettings())
+                .setNegativeButton("انصراف", (dialog, which) -> sendLocationErrorToWeb())
+                .setOnDismissListener(dialog -> permissionDialogVisible = false)
+                .show();
+    }
+
+    private void showLocationDisabledDialog() {
+        if (locationDialogVisible || isFinishing()) return;
+        locationDialogVisible = true;
+        new AlertDialog.Builder(this)
+                .setTitle("موقعیت مکانی خاموش است")
+                .setMessage("برای نمایش موقعیت شما روی نقشه، GPS یا سرویس موقعیت مکانی گوشی را روشن کنید.")
+                .setPositiveButton("رفتن به تنظیمات GPS", (dialog, which) -> openLocationSettings())
+                .setNegativeButton("انصراف", (dialog, which) -> sendLocationErrorToWeb())
+                .setOnDismissListener(dialog -> locationDialogVisible = false)
+                .show();
+    }
+
+    private void openLocationSettings() {
+        try {
+            waitingForLocationSettings = true;
+            startActivity(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS));
+        } catch (Exception first) {
+            try {
+                startActivity(new Intent(Settings.ACTION_SETTINGS));
+            } catch (Exception ignored) {
+                waitingForLocationSettings = false;
+                Toast.makeText(this, "بازکردن تنظیمات GPS ممکن نشد", Toast.LENGTH_SHORT).show();
+                sendLocationErrorToWeb();
+            }
+        }
+    }
+
+    private void openAppLocationSettings() {
+        try {
+            waitingForAppSettings = true;
+            Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+            intent.setData(Uri.parse("package:" + getPackageName()));
+            startActivity(intent);
+        } catch (Exception ignored) {
+            waitingForAppSettings = false;
+            Toast.makeText(this, "بازکردن تنظیمات برنامه ممکن نشد", Toast.LENGTH_SHORT).show();
+            sendLocationErrorToWeb();
+        }
     }
 
     private void findAndSendLocation() {
         try {
             locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
             if (locationManager == null) { sendLocationErrorToWeb(); return; }
+            if (!isLocationServiceEnabled()) { showLocationDisabledDialog(); return; }
             if (locationListener != null) {
                 try { locationManager.removeUpdates(locationListener); }
                 catch (SecurityException ignored) {}
             }
 
+            boolean requireFresh = freshLocationRequested;
+            freshLocationRequested = false;
             Location best = null;
-            String[] providers = new String[] {
-                    LocationManager.NETWORK_PROVIDER,
-                    LocationManager.GPS_PROVIDER
-            };
+            String[] providers;
+            if (requireFresh && locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+                providers = new String[] { LocationManager.GPS_PROVIDER };
+            } else if (requireFresh) {
+                providers = new String[] { LocationManager.NETWORK_PROVIDER };
+            } else {
+                providers = new String[] {
+                        LocationManager.NETWORK_PROVIDER,
+                        LocationManager.GPS_PROVIDER
+                };
+            }
             for (String provider : providers) {
                 try {
                     Location candidate = locationManager.getLastKnownLocation(provider);
@@ -132,7 +269,7 @@ public class MainActivity extends Activity {
                     }
                 } catch (SecurityException ignored) {}
             }
-            if (best != null) sendLocationToWeb(best);
+            if (best != null && !requireFresh) sendLocationToWeb(best);
 
             locationListener = new LocationListener() {
                 @Override
@@ -171,6 +308,7 @@ public class MainActivity extends Activity {
     }
 
     private void sendLocationErrorToWeb() {
+        freshLocationRequested = false;
         if (web == null) return;
         runOnUiThread(new Runnable() {
             @Override public void run() {
@@ -183,12 +321,65 @@ public class MainActivity extends Activity {
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode != LOCATION_PERMISSION_REQUEST) return;
-        boolean granted = false;
-        for (int result : grantResults) {
-            if (result == PackageManager.PERMISSION_GRANTED) { granted = true; break; }
+        if (hasLocationPermission()) {
+            if (isLocationServiceEnabled()) findAndSendLocation();
+            else showLocationDisabledDialog();
+            return;
         }
-        if (granted) findAndSendLocation();
-        else sendLocationErrorToWeb();
+        boolean canExplain = Build.VERSION.SDK_INT >= Build.VERSION_CODES.M
+                && (shouldShowRequestPermissionRationale(android.Manifest.permission.ACCESS_FINE_LOCATION)
+                || shouldShowRequestPermissionRationale(android.Manifest.permission.ACCESS_COARSE_LOCATION));
+        if (canExplain) showPermissionExplanationDialog();
+        else showPermissionSettingsDialog();
+    }
+
+    private void printHtmlDocument(final String requestedTitle, final String html) {
+        if (html == null || html.trim().length() == 0) {
+            Toast.makeText(this, "گزارشی برای چاپ آماده نشده است", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        final String title = requestedTitle == null || requestedTitle.trim().length() == 0
+                ? "گزارش UTM امنلاک" : requestedTitle.trim();
+        try {
+            final WebView printer = new WebView(this);
+            printWeb = printer;
+            WebSettings settings = printer.getSettings();
+            settings.setJavaScriptEnabled(false);
+            settings.setDefaultTextEncodingName("UTF-8");
+            settings.setLoadWithOverviewMode(true);
+            settings.setUseWideViewPort(true);
+            printer.setWebViewClient(new WebViewClient() {
+                private boolean started;
+                @Override
+                public void onPageFinished(WebView view, String url) {
+                    if (started || isFinishing()) return;
+                    started = true;
+                    try {
+                        PrintManager printManager = (PrintManager) getSystemService(Context.PRINT_SERVICE);
+                        if (printManager == null) {
+                            Toast.makeText(MainActivity.this, "سرویس چاپ اندروید در دسترس نیست", Toast.LENGTH_SHORT).show();
+                            return;
+                        }
+                        String jobName = "امنلاک - " + title;
+                        PrintDocumentAdapter adapter = printer.createPrintDocumentAdapter(jobName);
+                        PrintAttributes attributes = new PrintAttributes.Builder()
+                                .setMediaSize(PrintAttributes.MediaSize.ISO_A4)
+                                .setColorMode(PrintAttributes.COLOR_MODE_COLOR)
+                                .setMinMargins(new PrintAttributes.Margins(350, 350, 350, 350))
+                                .build();
+                        printManager.print(jobName, adapter, attributes);
+                        Toast.makeText(MainActivity.this, "پرینتر یا ذخیره به‌صورت PDF را انتخاب کنید", Toast.LENGTH_LONG).show();
+                        printWeb = null;
+                    } catch (Exception e) {
+                        Toast.makeText(MainActivity.this, "ساخت خروجی چاپ ممکن نشد", Toast.LENGTH_SHORT).show();
+                    }
+                }
+            });
+            printer.loadDataWithBaseURL("file:///android_asset/www/", html, "text/html", "UTF-8", null);
+        } catch (Exception e) {
+            printWeb = null;
+            Toast.makeText(this, "بازکردن سرویس چاپ ممکن نشد", Toast.LENGTH_SHORT).show();
+        }
     }
 
     private boolean handleUrl(String url) {
@@ -206,6 +397,23 @@ public class MainActivity extends Activity {
         public void requestLocation() {
             runOnUiThread(new Runnable() {
                 @Override public void run() { requestUserLocation(); }
+            });
+        }
+
+        @JavascriptInterface
+        public void requestFreshLocation() {
+            runOnUiThread(new Runnable() {
+                @Override public void run() {
+                    freshLocationRequested = true;
+                    requestUserLocation();
+                }
+            });
+        }
+
+        @JavascriptInterface
+        public void printHtml(final String title, final String html) {
+            runOnUiThread(new Runnable() {
+                @Override public void run() { printHtmlDocument(title, html); }
             });
         }
 
@@ -304,6 +512,28 @@ public class MainActivity extends Activity {
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        final boolean returnedFromAppSettings = waitingForAppSettings;
+        final boolean returnedFromLocationSettings = waitingForLocationSettings;
+        waitingForAppSettings = false;
+        waitingForLocationSettings = false;
+        if (!returnedFromAppSettings && !returnedFromLocationSettings) return;
+        if (web == null) return;
+        web.postDelayed(() -> {
+            if (returnedFromAppSettings && !hasLocationPermission()) {
+                Toast.makeText(MainActivity.this, "مجوز موقعیت هنوز فعال نشده است", Toast.LENGTH_SHORT).show();
+                sendLocationErrorToWeb();
+            } else if (returnedFromLocationSettings && !isLocationServiceEnabled()) {
+                Toast.makeText(MainActivity.this, "GPS هنوز خاموش است", Toast.LENGTH_SHORT).show();
+                sendLocationErrorToWeb();
+            } else {
+                requestUserLocation();
+            }
+        }, 350);
+    }
+
+    @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == FILE_CHOOSER_REQUEST && filePathCallback != null) {
@@ -322,6 +552,10 @@ public class MainActivity extends Activity {
         if (web != null) {
             web.removeJavascriptInterface("Android");
             web.destroy();
+        }
+        if (printWeb != null) {
+            printWeb.destroy();
+            printWeb = null;
         }
         super.onDestroy();
     }
